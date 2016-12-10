@@ -1,19 +1,25 @@
 {
   "name": "data_server",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cookie-parser": "^1.4.3",
+    "ejs": "^2.5.2",
+    "exec": "^0.2.1",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
+    "fs": "0.0.1-security",
+    "ipware": "^1.0.0",
+    "path": "^0.12.7",
+    "request": "^2.76.0",
+    "tcp-ping": "^0.1.1"
+  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.14.0",
-    "ipware": "^1.0.0",
-    "nodemon": "^1.11.0",
-    "ping": "^0.2.1",
-    "tcp-ping": "^0.1.1"
-  },
-  "devDependencies": {},
-  "description": ""
+  "license": "ISC"
 }

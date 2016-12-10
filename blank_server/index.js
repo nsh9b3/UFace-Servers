@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var ejs = require('ejs');
 var request = require('request');
-var dns = require('dns');
+//var dns = require('dns');
 var fs = require('fs');
 
 // Using ejs to render html files 
