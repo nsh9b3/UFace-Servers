@@ -1,0 +1,77 @@
+<html>
+<head>
+<style type="text/css">
+	table {
+		font-family: arial, sans-serif;	
+		border-collapse: collapse;
+	}
+	td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+</style>
+</head>
+<body style="width:100%; height: 100%;">
+	<div style="width:100%;" align="center">
+		<h1> Register Services with UFace </h1>
+			<form id="form_register" method="post">
+				<table>
+					<tr>
+						<th> Name: </th> 
+						<td> <input name="Name" value="Bank"> </td>
+					</tr>
+					<tr>
+						<th> Address: </th> 
+						<td> <input id="Address" name="Address"> </td>
+					</tr>
+					<tr>
+						<th> Port: </th>
+						<td> <input id="Port" name="Port"> </td>
+					</tr>
+				</table> <br>
+				<button>Add</button>
+			</form>
+		<h2> List of Registered Services </h2>
+		<table id="table_services" align="center">
+			<tr>
+				<th> Service Name </th>
+				<th> URL </th>
+				<th> User Count </th>
+			</tr>
+		</table>
+		<script>
+			var count = 1;
+			var tableService = document.getElementById('table_services');
+			var services = <%- JSON.stringify(Services) %>;
+			var response = <%- JSON.stringify(Response) %>;
+			var address = <%- JSON.stringify(Address) %>;
+			var port = <%- JSON.stringify(Port) %>;
+
+			document.getElementById('form_register').action = 'http://' + address + ':' + port + '/register_service/';
+
+			// Remove this later
+			document.getElementById('Address').value = address;
+			document.getElementById('Port').value = port+1;
+
+			for(var key in services)
+			{
+				var row = tableService.insertRow(count++);
+
+				var nameCell = row.insertCell(0);
+				var urlCell = row.insertCell(1);
+				var countCell = row.insertCell(2);
+
+				nameCell.innerHTML = key;
+				urlCell.innerHTML = '<a href="'+services[key].Url+'">link</a>';
+				countCell.innerHTML = Object.keys(services[key].Passwords).length;
+			}
+
+			if(response.Result == false && response.Message != '')
+			{
+				alert(response.Message);
+			}
+		</script>
+	</div>
+</body>
+</html>

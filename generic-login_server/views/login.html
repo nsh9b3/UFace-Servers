@@ -1,0 +1,107 @@
+<html>
+<head>
+</head>
+<body style="width:100%; height:100%;">
+	<div align="center" style="width:100%;">
+		<h1 id="serviceName"> </h1>
+		<table>
+			<tr>
+				<td align="center"> Name: </td> 
+				<td> <input type="text" id="Name"> </input> </td>
+			</tr>
+			<tr>
+				<td align="center"> Password: </td>
+				<td> <input type="password" id="Password"> </input> </td>
+			</tr>
+		</table>
+		<button onclick="loginForm();" style="width:10%; height:5%;"> Login </button> <br>
+		<button onclick="forgotForm();" style="width:10%; height:5%;"> Forgot Password </button><br>
+		<button onclick="backForm();" style="width:10%; height:5%;"> Back </button> </br>
+	</div>
+	<script type="text/javascript">
+		var valid = <%- JSON.stringify(Valid) %>;
+		var address = <%- JSON.stringify(Address) %>;
+
+		console.log(valid);
+
+		if(valid.Result == false && valid.Messages.length != 0)
+		{
+			var message = '';
+			for(var key in valid.Messages)
+			{
+				message = message.concat(valid.Messages[key]);
+			}
+			alert(message);
+		}
+		else if (valid.Result == true)
+		{
+			alert('Successfully logged in!');
+		}
+
+		function loginForm() {
+			var form = document.createElement('form');
+			form.action = address + 'login/'
+			form.method = 'post';
+
+			var attTask = document.createElement('input');
+			attTask.setAttribute('type', 'text');
+			attTask.setAttribute('name', 'Task');
+			attTask.setAttribute('value', 'Login');
+
+			var attName = document.createElement('input');
+			attName.setAttribute('type', 'text');
+			attName.setAttribute('name', 'Name');
+			attName.setAttribute('value', document.getElementById('Name').value);
+
+			var attPass = document.createElement('input');
+			attPass.setAttribute('type', 'text');
+			attPass.setAttribute('name', 'Password');
+			attPass.setAttribute('value', document.getElementById('Password').value);
+
+			form.appendChild(attTask);
+			form.appendChild(attName);
+			form.appendChild(attPass);
+
+			// Attach the form, submit it, then remove it (since there is not reason to keep it)
+			document.body.appendChild(form);
+			form.submit();
+			document.body.removeChild(form);
+		}
+
+		function forgotForm() {
+			var form = document.createElement('form');
+			form.action = address + 'login/'
+			form.method = 'post';
+
+			var attTask = document.createElement('input');
+			attTask.setAttribute('type', 'text');
+			attTask.setAttribute('name', 'Task');
+			attTask.setAttribute('value', 'Forgot');
+
+			var attName = document.createElement('input');
+			attName.setAttribute('type', 'text');
+			attName.setAttribute('name', 'Name');
+			attName.setAttribute('value', document.getElementById('Name').value);
+
+			form.appendChild(attTask);
+			form.appendChild(attName);
+
+			// Attach the form, submit it, then remove it (since there is not reason to keep it)
+			document.body.appendChild(form);
+			form.submit();
+			document.body.removeChild(form);
+		}
+
+		function backForm() {
+			var form = document.createElement('form');
+			form.action = address
+			form.method = 'get';
+
+			// Attach the form, submit it, then remove it (since there is not reason to keep it)
+			document.body.appendChild(form);
+			form.submit();
+			console.log(form);
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+circuit_gen.o: circuit_gen.cpp circuit_gen.h
+main.o: main.cpp server1.h pair.h paillier.h server2.h circuit_gen.h
+paillier.o: paillier.cpp paillier.h
+server1.o: server1.cpp server1.h pair.h paillier.h
+server2.o: server2.cpp server2.h pair.h paillier.h

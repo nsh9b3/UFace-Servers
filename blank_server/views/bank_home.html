@@ -1,0 +1,41 @@
+<html>
+<head>
+<style type="text/css">
+	table {
+		font-family: arial, sans-serif;	
+		border-collapse: collapse;
+	}
+	td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+</style>
+</head>
+<body style="width:100%; height: 100%;">
+	<div style="width:100%;" align="center">
+		<h1> Bank Service </h1>
+	</div>
+	<table align="center" id="table_users">
+		<tr>
+			<th> User </th>
+			<th> Index </th>
+		</tr>
+	</table>
+	<script type='text/javascript'>
+			var count = 1;
+			var tablePasswords = document.getElementById('table_users');
+			var users = <%- JSON.stringify(users) %>;
+			for(var key in users)
+			{
+				var row = tablePasswords.insertRow(count++);
+
+				var user = row.insertCell(0);
+				var index = row.insertCell(1);
+
+				user.innerHTML = key;
+				index.innerHTML = users[key]['Index'];
+			}
+		</script>
+</body>
+</html>
