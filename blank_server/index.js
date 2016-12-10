@@ -32,7 +32,7 @@ var users = {};
 var usersLoc = path.join(__dirname, 'users');
 
 // Name of service
-var serviceName = 'Bank';
+var serviceName = 'Blank';
 
 // Read the user list and populate the information properly (if data exists)
 fs.access(usersLoc, fs.F_OK, function(err) {
@@ -72,7 +72,7 @@ dns.lookup(require('os').hostname(), function (err, add, fam) {
 // Show the users on the homepage of the server
 // Currently just shows a list of users IDs and their corresponding index
 app.get('/', (req, res) => {
-	res.render(path.join(__dirname, 'views', 'bank_home.html'), {users : users});
+	res.render(path.join(__dirname, 'views', 'blank_home.html'), {users : users});
 });
 
 // Called on by the client (Android device)
