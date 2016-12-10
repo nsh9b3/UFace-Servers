@@ -3,7 +3,7 @@ var express = require('express');
 var app = express();
 var ejs = require('ejs');
 var fs = require('fs');
-var dns = require('dns');
+//var dns = require('dns');
 
 var publicKeyLoc = path.join(__dirname, 'public_key');
 var publicKey = {};
