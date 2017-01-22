@@ -12,16 +12,27 @@ app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({ extended: true })); // to support URL-encoded bodies
 
 // Passwords for this service
-var passwords = {};
+var passwords = { 'Bank': {},
+				  'Health': {},
+				  'School': {},
+				  'Insurace': {},
+				  'Tax': {},
+				  'Food': {},
+				  'Phone': {},
+				  'Magazine': {},
+				  'Music': {},
+				  'House': {} };
 
-// Name and port of this service (change this)
-var name = 'Generic';
+// Port of these 'servers'
 var port = '3100';
 
-// Where this server is stored
-var address = '';
+// This is the address of this server
+var localIP = '192.168.0.5';
 
-// Where the services are stored on the server
+// This is web the address to reach this server (with port)
+var address = 'http://' + localIP + ':' + port + '/';
+
+// Where the passwords are stored on the server
 var passwordLoc = path.join(__dirname, 'passwords');
 
 // Read the passwordLoc list and populate the information properly (if data exists)
@@ -44,19 +55,21 @@ fs.access(passwordLoc, fs.F_OK, function(err) {
 			    // handle error
 			});
 		});
+		// Use the names listed above
+		fs.writeFile(passwordLoc, '', function (err) {
+
+		});
+		fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
+
+		});
     }
 });
 
-dns.lookup(require('os').hostname(), function (err, add, fam) {
-	var localIP = add;
-	address = 'http://' + localIP + ':' + port + "/";
-});
-
 app.get('/', (req, res) => {
-	res.render(path.join(__dirname, 'views', 'home.html'), {Passwords : passwords, Name : name, Address : address});
+	res.render(path.join(__dirname, 'views', 'home.html'), {Passwords : Object.keys(passwords), Address : address});
 });
 
-app.get('/register/', (req, res) => {
+/*app.get('/register/', (req, res) => {
 	var valid = {};
 	valid.Result = false;
 	valid.Messages = [];
@@ -187,6 +200,6 @@ app.post('/login/', (req, res) => {
 
 
 	res.render(path.join(__dirname, 'views', 'login.html'), {Valid : valid, Address : address});
-});
+});*/
 
 app.listen(port);
