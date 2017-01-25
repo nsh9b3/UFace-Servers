@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true })); // to support URL-encoded bo
 var passwords = { 'Bank': {},
 				  'Health': {},
 				  'School': {},
-				  'Insurace': {},
+				  'Insurance': {},
 				  'Tax': {},
 				  'Food': {},
 				  'Phone': {},
@@ -27,7 +27,7 @@ var passwords = { 'Bank': {},
 var port = '3100';
 
 // This is the address of this server
-var localIP = '192.168.0.5';
+var localIP = '10.106.71.85';
 
 // This is web the address to reach this server (with port)
 var address = 'http://' + localIP + ':' + port + '/';
@@ -66,7 +66,156 @@ fs.access(passwordLoc, fs.F_OK, function(err) {
 });
 
 app.get('/', (req, res) => {
-	res.render(path.join(__dirname, 'views', 'home.html'), {Passwords : Object.keys(passwords), Address : address});
+	res.render(path.join(__dirname, 'views', 'home.html'), {Passwords : Object.keys(passwords), Address : address, Users : Object.keys(passwords['Bank'])});
+});
+
+app.get('/Bank/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Bank', Users : passwords['Bank'], Address : address});
+});
+app.get('/Health/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Health', Users : passwords['Health'], Address : address});
+});
+app.get('/School/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'School', Users : passwords['School'], Address : address});
+});
+app.get('/Insurance/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Insurance', Users : passwords['Insurance'], Address : address});
+});
+app.get('/Tax/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Tax', Users : passwords['Tax'], Address : address});
+});
+app.get('/Food/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Food', Users : passwords['Food'], Address : address});
+});
+app.get('/Phone/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Phone', Users : passwords['Phone'], Address : address});
+});
+app.get('/Magazine/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Magazine', Users : passwords['Magazine'], Address : address});
+});
+app.get('/Music/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'Music', Users : passwords['Music'], Address : address});
+});
+app.get('/House/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : 'House', Users : passwords['House'], Address : address});
+});
+
+app.get('/Register/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'register.html'), {Users : Object.keys(passwords['Bank']), Address : address});
+});
+
+app.post('/Register/', (req, res) => {
+	var json = req.body;
+	var name = json['Name'];
+
+	for(var index in passwords)
+	{
+		passwords[index][name] = {};
+		passwords[index][name]['Password'] = '';
+		passwords[index][name]['Failed'] = 0;
+		passwords[index][name]['Forgot'] = 0;
+		passwords[index][name]['Valid'] = 0;
+	}
+
+	// Use the names listed above
+	fs.writeFile(passwordLoc, '', function (err) {
+
+	});
+	fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
+
+	});
+
+	res.render(path.join(__dirname, 'views', 'register.html'), {Users : Object.keys(passwords['Bank']), Address : address});
+});
+
+app.get('/Login/*', (req, res) => {
+	var service = req.url.split('/Login/')[1].split('.')[0];
+	var user = req.url.split('/Login/')[1].split('.')[1];
+	var isRegistered = (passwords[service][user]['Password'] == '' ? false : true);
+	var previous = [];
+
+	var result = {};
+	result.Task = 'None';
+	result.Valid = false;
+
+	for(var key in passwords)
+	{
+		previous.push(passwords[key][user]['Password']);
+	}
+
+	res.render(path.join(__dirname, 'views', 'login.html'), {Service : service, User : user, Result : result, Registered : isRegistered, Previous : previous, Address : address});
+});
+
+app.post('/Login/*', (req, res) => {
+	var pass = req.body.Password;
+	var task = req.body.Task;
+
+	var service = req.url.split('/Login/')[1].split('.')[0];
+	var user = req.url.split('/Login/')[1].split('.')[1];
+
+	var result = {};
+	result.Task = task;
+	result.Valid = false;
+
+	if(task == 'Register')
+	{
+		passwords[service][user]['Password'] = pass;
+		fs.writeFile(passwordLoc, '', function (err) {
+
+		});
+		fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
+
+		});
+	}
+	else if(task == 'Login')
+	{
+		if(passwords[service][user]['Password'] == pass)
+		{
+			result.Valid = true;
+			passwords[service][user]['Valid'] = passwords[service][user]['Valid'] + 1;
+			fs.writeFile(passwordLoc, '', function (err) {
+
+			});
+			fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
+
+			});
+		}
+		else
+		{
+			passwords[service][user]['Failed'] = passwords[service][user]['Failed'] + 1;
+			fs.writeFile(passwordLoc, '', function (err) {
+
+			});
+			fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
+
+			});
+		}
+	}
+	else if(task == 'Forgot')
+	{
+		passwords[service][user]['Password'] = pass;
+		passwords[service][user]['Forgot'] = passwords[service][user]['Forgot'] + 1;
+		fs.writeFile(passwordLoc, '', function (err) {
+
+		});
+		fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
+
+		});
+	}
+
+
+	var isRegistered = (passwords[service][user]['Password'] == '' ? false : true);
+	var previous = [];
+	for(var key in passwords)
+	{
+		previous.push(passwords[key][user]['Password']);
+	}
+
+	res.render(path.join(__dirname, 'views', 'login.html'), {Service : service, User : user, Result : result, Registered : isRegistered, Previous : previous, Address : address});
+});
+
+/*app.get('/Bank/', (req, res) => {
+	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : , Address : address});
 });
 
 /*app.get('/register/', (req, res) => {

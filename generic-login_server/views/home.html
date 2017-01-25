@@ -21,10 +21,18 @@
 				<th> Link </th>
 			</tr>
 		</table>
+		<h1> Users List </h1>
+		<table id="tableUsers" align="center">
+			<tr>
+				<th> Users </th>
+			</tr>
+		</table> <br>
+		<button id="addUser" onclick="addUser()"> Add User </button>
 	</div>
 	<script type="text/javascript">
 		var services = <%- JSON.stringify(Passwords) %>;
 		var address = <%- JSON.stringify(Address) %>;
+		var users = <%- JSON.stringify(Users) %>;
 
 		var count = 1;
 		var table = document.getElementById('tableServices');
@@ -41,6 +49,28 @@
 			linkRef.innerHTML = "link";
 			linkRef.href = address + services[index] + "/";
 			link.appendChild(linkRef);
+		}
+
+		count = 1;
+		table = document.getElementById('tableUsers');
+		for(var index in users)
+		{
+			var row = table.insertRow(count++);
+
+			var user = row.insertCell(0);
+
+			user.innerHTML = users[index];
+		}
+
+		function addUser() 
+		{
+			var form = document.createElement('form');
+		    form.setAttribute('method', 'get');
+		    form.setAttribute('action', address + 'Register/');
+		    form.style.display = 'hidden';
+		    document.body.appendChild(form);
+		    form.submit();
+		    document.body.removeChild(form);
 		}
 	</script>
 </body>

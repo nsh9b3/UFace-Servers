@@ -14,52 +14,118 @@
 				<td> <input type="password" id="Password"> </input> </td>
 			</tr>
 		</table>
-		<button onclick="loginForm();" style="width:10%; height:5%;"> Login </button> <br>
-		<button onclick="forgotForm();" style="width:10%; height:5%;"> Forgot Password </button><br>
-		<button onclick="backForm();" style="width:10%; height:5%;"> Back </button> </br>
+		<button id="back" onclick="backForm();" style="width:10%; height:5%;"> Home </button> <br>
+		<button id="add" onclick="addForm();" style="width:10%; height: 5%; display:none"> Add Password </button> <br>
+		<button id="login" onclick="loginForm();" style="width:10%; height:5%; display:none;"> Login </button> <br>
+		<button id="forgot" onclick="forgotForm();" style="width:10%; height:5%; display:none;"> Forgot Password </button><br>
 	</div>
 	<script type="text/javascript">
-		var valid = <%- JSON.stringify(Valid) %>;
+		var service = <%- JSON.stringify(Service) %>;
+		var registered = <%- JSON.stringify(Registered) %>;
+		var user = <%- JSON.stringify(User) %>;
 		var address = <%- JSON.stringify(Address) %>;
+		var previous = <%- JSON.stringify(Previous) %>;
+		var result = <%- JSON.stringify(Result) %>;
 
-		console.log(valid);
+		document.getElementById('serviceName').innerHTML = service;
+		document.getElementById('Name').value = user;
 
-		if(valid.Result == false && valid.Messages.length != 0)
+		if(!registered)
 		{
-			var message = '';
-			for(var key in valid.Messages)
-			{
-				message = message.concat(valid.Messages[key]);
-			}
-			alert(message);
+			document.getElementById('add').style.display = 'block';
 		}
-		else if (valid.Result == true)
+		else
 		{
-			alert('Successfully logged in!');
+			document.getElementById('login').style.display = 'block';
+			document.getElementById('forgot').style.display = 'block';
+		}
+
+		if(result.Task == 'Login')
+		{
+			if(result.Valid)
+			{
+				alert('Login is correct!');
+			}
+			else
+			{
+				alert('Incorrect Login... try again!');
+			}
+		}
+
+		function addForm() 
+		{
+			var password = document.getElementById('Password').value;
+			var isValid = true;
+			if(password.length < 8)
+			{
+				isValid = false;
+				alert('Password must be at least 8 characters long!');
+			}
+			if(!(hasLowerCase(password) && hasUpperCase(password)))
+			{
+				isValid = false;
+				alert('Password must contain at least 1 upper and lower case letter!');
+			}
+			if(!hasNumber(password))
+			{
+				isValid = false;
+				alert('Password must contain at least 1 number!');
+			}
+			if(!isAlphaNumeric(password))
+			{
+				isValid = false;
+				alert('Password must only contain letters and numbers!');
+			}
+			if(previous.indexOf(password) > -1)
+			{
+				isValid = false;
+				alert('Password must be different than any other used password!');
+			}
+
+			// Then update password back on the server
+			if(isValid)
+			{
+				var form = document.createElement('form');
+				form.action = address + "Login/" + service + '.' + user;
+				form.method = 'post';
+
+				var attPass = document.createElement('input');
+				attPass.setAttribute('type', 'text');
+				attPass.setAttribute('name', 'Password');
+				attPass.setAttribute('value', password);
+
+				var attTask = document.createElement('input');
+				attTask.setAttribute('type', 'text');
+				attTask.setAttribute('name', 'Task');
+				attTask.setAttribute('value', 'Register');
+
+				form.appendChild(attPass);
+				form.appendChild(attTask);
+
+				document.body.appendChild(form);
+				form.submit();
+				document.body.removeChild(form);
+			}
 		}
 
 		function loginForm() {
+			var password = document.getElementById('Password').value;
+
 			var form = document.createElement('form');
-			form.action = address + 'login/'
+			form.action = address + "Login/" + service + '.' + user;
 			form.method = 'post';
+
+			var attPass = document.createElement('input');
+			attPass.setAttribute('type', 'text');
+			attPass.setAttribute('name', 'Password');
+			attPass.setAttribute('value', password);
 
 			var attTask = document.createElement('input');
 			attTask.setAttribute('type', 'text');
 			attTask.setAttribute('name', 'Task');
 			attTask.setAttribute('value', 'Login');
 
-			var attName = document.createElement('input');
-			attName.setAttribute('type', 'text');
-			attName.setAttribute('name', 'Name');
-			attName.setAttribute('value', document.getElementById('Name').value);
-
-			var attPass = document.createElement('input');
-			attPass.setAttribute('type', 'text');
-			attPass.setAttribute('name', 'Password');
-			attPass.setAttribute('value', document.getElementById('Password').value);
-
 			form.appendChild(attTask);
-			form.appendChild(attName);
 			form.appendChild(attPass);
 
 			// Attach the form, submit it, then remove it (since there is not reason to keep it)
@@ -69,27 +135,65 @@
 		}
 
 		function forgotForm() {
-			var form = document.createElement('form');
-			form.action = address + 'login/'
-			form.method = 'post';
+			var password = document.getElementById('Password').value;
+			if(password == '')
+			{
+				alert('Please enter a valid password in the password field!');
+			}
+			else
+			{
+				var isValid = true;
+				if(password.length < 8)
+				{
+					isValid = false;
+					alert('Password must be at least 8 characters long!');
+				}
+				if(!(hasLowerCase(password) && hasUpperCase(password)))
+				{
+					isValid = false;
+					alert('Password must contain at least 1 upper and lower case letter!');
+				}
+				if(!hasNumber(password))
+				{
+					isValid = false;
+					alert('Password must contain at least 1 number!');
+				}
+				if(!isAlphaNumeric(password))
+				{
+					isValid = false;
+					alert('Password must only contain letters and numbers!');
+				}
+				if(previous.indexOf(password) > -1)
+				{
+					isValid = false;
+					alert('Password must be different than any other used password!');
+				}
 
-			var attTask = document.createElement('input');
-			attTask.setAttribute('type', 'text');
-			attTask.setAttribute('name', 'Task');
-			attTask.setAttribute('value', 'Forgot');
+				if(isValid)
+				{
+					var form = document.createElement('form');
+					form.action = address + "Login/" + service + '.' + user;
+					form.method = 'post';
 
-			var attName = document.createElement('input');
-			attName.setAttribute('type', 'text');
-			attName.setAttribute('name', 'Name');
-			attName.setAttribute('value', document.getElementById('Name').value);
+					var attPass = document.createElement('input');
+					attPass.setAttribute('type', 'text');
+					attPass.setAttribute('name', 'Password');
+					attPass.setAttribute('value', password);
 
-			form.appendChild(attTask);
-			form.appendChild(attName);
+					var attTask = document.createElement('input');
+					attTask.setAttribute('type', 'text');
+					attTask.setAttribute('name', 'Task');
+					attTask.setAttribute('value', 'Forgot');
 
-			// Attach the form, submit it, then remove it (since there is not reason to keep it)
-			document.body.appendChild(form);
-			form.submit();
-			document.body.removeChild(form);
+					form.appendChild(attPass);
+					form.appendChild(attTask);
+
+					// Attach the form, submit it, then remove it (since there is not reason to keep it)
+					document.body.appendChild(form);
+					form.submit();
+					document.body.removeChild(form);
+				}
+			}
 		}
 
 		function backForm() {
@@ -101,6 +205,19 @@
 			document.body.appendChild(form);
 			form.submit();
 			console.log(form);
+		}
+
+		function hasLowerCase(str) {
+			return (/[a-z]/.test(str));
+		}
+		function hasUpperCase(str) {
+			return (/[A-Z]/.test(str));
+		}
+		function hasNumber(str) {
+			return (/[0-9]/.test(str));
+		}
+		function isAlphaNumeric(str) {
+			return (/^[a-zA-Z0-9]+$/.test(str));
 		}
 	</script>
 </body>
