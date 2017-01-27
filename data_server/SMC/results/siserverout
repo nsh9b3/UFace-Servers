@@ -1,0 +1,12 @@
+Time (ms) Starting program: 1485548814916 (0.0, 0.0)
+waiting for client to connect
+client has connected
+1
+Elapsed time (ms) on circuit preparation: 1049 (0.009765625, 0.009765625)
+Elapsed time (ms) on OT preparation: 426 (13.103515625, 8.97265625)
+Elapsed time (ms) on transfer inputs: 594 (805.505859375, 547.6484375)
+Elapsed time (ms) on execution of circuit: 1623 (4869.15625, 0.0)
+output: 
+result = 0
+testresult = 50240
+sizecheck = 64516

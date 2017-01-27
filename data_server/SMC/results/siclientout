@@ -1,0 +1,12 @@
+Time (ms) Starting program: 1485548815719 (0.0, 0.0)
+1
+Elapsed time (ms) on circuit preparation: 285 (0.0, 0.0)
+Time (ms) right before NPOT public key generation: 1485548816083 (0.0, 0.0)
+Elapsed time (ms) on NPOT public key generation: 16 (0.0, 0.0)
+Elapsed time (ms) on OT preparation: 286 (0.0, 0.0)
+Elapsed time (ms) on transfer inputs: 599 (0.0, 0.0)
+Elapsed time (ms) on execution of circuit: 1624 (0.0, 0.0)
+output: 
+result = 0
+testresult = 50240
+sizecheck = 64516
