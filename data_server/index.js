@@ -436,25 +436,37 @@ app.post('/authenticate_password', (req, res) => {
 
 				var cmd = cmd_start + 'mkdir ./saved-results/' + dir + 
 									  ' && mkdir ./saved-results/' + dir + '_1' +
-									  ' && mkdir ./saved-results/' + dir + '_2' +
-							     ' && ./driver ' + cmd_mid + '_1 && ./driver ' + cmd_mid + '_2 && ./driver ' + cmd_mid + cmd_end;
+									  //' && mkdir ./saved-results/' + dir + '_2' +
+							     ' && ./driver ' + cmd_mid + 
+							     ' && ./driver ' + cmd_mid + '_1' +
+							     //' && ./driver ' + cmd_mid + '_2' + 
+							     cmd_end;
 
 				console.log(cmd);
-				exec(cmd, function(error, stdout, stderr) {
+				var child = exec(cmd, function(error, stdout, stderr) {
 					delete smcFiles[json.Index];
 
-					console.log(stdout);
+					console.log('stdout: ' + stdout);
+					console.log('stderr: ' + stderr);
+					if(error !== null)
+					    console.log('error: ' + error);
 
-					if(stdout.indexOf('Pass') > -1)
+					if(stdout.indexOf('Pass') > -1 && stdout.indexOf('Fail') < 0)
 					{
 						resp.Result = true;
 						resp.Message = 'The password is valid.';
 						resp.Index = json.Index;
 					}
-					else
+					else if(stdout.indexOf('Fail') > -1 && stdout.indexOf('Pass') < 0)
 					{
 						resp.Result = false;
 						resp.Message = 'The password is invalid.';
+						resp.Index = json.Index;
+					}
+					else
+					{
+						resp.Result = false;
+						resp.Message = 'The algorithm failed. Try again.';
 						resp.Index = json.Index;
 					}
 
