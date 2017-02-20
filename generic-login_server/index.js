@@ -27,7 +27,7 @@ var passwords = { 'Bank': {},
 var port = '3100';
 
 // This is the address of this server
-var localIP = '10.106.71.85';
+var localIP = '131.151.8.33';
 
 // This is web the address to reach this server (with port)
 var address = 'http://' + localIP + ':' + port + '/';
@@ -107,6 +107,10 @@ app.get('/Register/', (req, res) => {
 app.post('/Register/', (req, res) => {
 	var json = req.body;
 	var name = json['Name'];
+	var age = json['Age'];
+	var job = json['Occupation'];
+	var gender = json['Gender'];
+	var degree = json['Degree'];
 
 	for(var index in passwords)
 	{
@@ -115,6 +119,8 @@ app.post('/Register/', (req, res) => {
 		passwords[index][name]['Failed'] = 0;
 		passwords[index][name]['Forgot'] = 0;
 		passwords[index][name]['Valid'] = 0;
+		passwords[index][name]['Attempt'] = [];
+		passwords[index][name]['Time'] = [];
 	}
 
 	// Use the names listed above
@@ -173,6 +179,8 @@ app.post('/Login/*', (req, res) => {
 		{
 			result.Valid = true;
 			passwords[service][user]['Valid'] = passwords[service][user]['Valid'] + 1;
+			passwords[service][user]['Attempt'].push('Valid');
+			passwords[service][user]['Time'].push(req.body.Time);
 			fs.writeFile(passwordLoc, '', function (err) {
 
 			});
@@ -183,6 +191,8 @@ app.post('/Login/*', (req, res) => {
 		else
 		{
 			passwords[service][user]['Failed'] = passwords[service][user]['Failed'] + 1;
+			passwords[service][user]['Attempt'].push('Failed');
+			passwords[service][user]['Time'].push(req.body.Time);
 			fs.writeFile(passwordLoc, '', function (err) {
 
 			});
@@ -195,6 +205,8 @@ app.post('/Login/*', (req, res) => {
 	{
 		passwords[service][user]['Password'] = pass;
 		passwords[service][user]['Forgot'] = passwords[service][user]['Forgot'] + 1;
+		passwords[service][user]['Attempt'].push('Forgot');
+		passwords[service][user]['Time'].push(req.body.Time);
 		fs.writeFile(passwordLoc, '', function (err) {
 
 		});
@@ -213,142 +225,5 @@ app.post('/Login/*', (req, res) => {
 
 	res.render(path.join(__dirname, 'views', 'login.html'), {Service : service, User : user, Result : result, Registered : isRegistered, Previous : previous, Address : address});
 });
-
-/*app.get('/Bank/', (req, res) => {
-	res.render(path.join(__dirname, 'views', 'generic.html'), {Service : , Address : address});
-});
-
-/*app.get('/register/', (req, res) => {
-	var valid = {};
-	valid.Result = false;
-	valid.Messages = [];
-
-	res.render(path.join(__dirname, 'views', 'register.html'), {Valid : valid, Address : address});
-});
-
-app.post('/register/', (req, res) => {
-	// Get the sent information
-	var urlencoded = req.body;
-
-	var valid = {};
-	valid.Result = true;
-	valid.Messages = [];
-
-	if(urlencoded.Name.length < 8)
-	{
-		valid.Result = false;
-		valid.Messages.push('Please pick a user ID that is at least 8 characters long!\n');
-	}
-	if(/[^a-zA-Z0-9]/.test(urlencoded.Name))
-	{
-		valid.Result = false;
-		valid.Messages.push('User ID contains invalid characters. Only use alphanumeric characters!\n');
-	}
-	if(urlencoded.Name in passwords)
-	{
-		valid.Result = false;
-		valid.Messages.push('User ID is already being used. Please pick a different user ID!\n');
-	}
-	if(urlencoded.Password.length < 8)
-	{
-		valid.Result = false;
-		valid.Messages.push('Please pick a password that is at least 8 characters long!\n');
-	}
-	if(urlencoded.Confirm != urlencoded.Password)
-	{
-		valid.Result = false;
-		valid.Messages.push('Passwords do not match!\n');
-	}
-
-	if(valid.Result == true)
-	{
-		passwords[urlencoded.Name] = {};
-		passwords[urlencoded.Name].Password = urlencoded.Password;
-		passwords[urlencoded.Name].Success = 0;
-		passwords[urlencoded.Name].Failed = 0;
-		passwords[urlencoded.Name].Forgot = 0;
-
-		fs.writeFile(passwordLoc, '', function (err) {
-
-		});
-		fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
-
-		});
-	}
-
-	res.render(path.join(__dirname, 'views', 'register.html'), {Valid : valid,  Address : address});
-});
-
-app.get('/login/', (req, res) => {
-	var valid = {};
-	valid.Result = false;
-	valid.Messages = [];
-
-	res.render(path.join(__dirname, 'views', 'login.html'), {Valid : valid, Address : address});
-});
-
-app.post('/login/', (req, res) => {
-	var urlencoded = req.body;
-
-
-	var valid = {};
-	valid.Result = true;
-	valid.Messages = [];
-
-	console.log(urlencoded);
-
-	if(urlencoded.Task == 'Login')
-	{
-		if(!(urlencoded.Name in passwords))
-		{
-			valid.Result = false;
-			valid.Messages.push('User ID does not exist!');
-		}
-		else
-		{
-			if(urlencoded.Password != passwords[urlencoded.Name].Password)
-			{
-				valid.Result = false;
-				valid.Messages.push('Password is incorrect');
-
-				passwords[urlencoded.Name].Failed = passwords[urlencoded.Name].Failed + 1;
-			}
-			else
-			{
-				passwords[urlencoded.Name].Success = passwords[urlencoded.Name].Success + 1;
-			}
-
-			fs.writeFile(passwordLoc, '', function (err) {
-
-			});
-			fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
-
-			});
-		}
-	} else if (urlencoded.Task == 'Forgot')
-	{
-		if(!(urlencoded.Name in passwords))
-		{
-			valid.Result = false;
-			valid.Messages.push('User ID does not exist!');
-		}
-		else
-		{
-			valid.Result = false;
-			valid.Messages.push('Your password is: "' + passwords[urlencoded.Name].Password + '"');
-			passwords[urlencoded.Name].Forgot = passwords[urlencoded.Name].Forgot + 1;
-
-			fs.writeFile(passwordLoc, '', function (err) {
-
-			});
-			fs.writeFile(passwordLoc, JSON.stringify(passwords), function (err) {
-
-			});
-		}
-	}
-
-
-	res.render(path.join(__dirname, 'views', 'login.html'), {Valid : valid, Address : address});
-});*/
 
 app.listen(port);
