@@ -66,7 +66,7 @@ var address;
 // Port of this server
 var port = 3000;
 
-localIP = '131.151.8.33';
+localIP = '192.168.0.5';
 address = 'http://' + localIP + ':' + port + '/';
 
 // Get the address of this server
@@ -436,10 +436,10 @@ app.post('/authenticate_password', (req, res) => {
 
 				var cmd = cmd_start + 'mkdir ./saved-results/' + dir + 
 									  ' && mkdir ./saved-results/' + dir + '_1' +
-									  //' && mkdir ./saved-results/' + dir + '_2' +
+									  ' && mkdir ./saved-results/' + dir + '_2' +
 							     ' && ./driver ' + cmd_mid + 
 							     ' && ./driver ' + cmd_mid + '_1' +
-							     //' && ./driver ' + cmd_mid + '_2' + 
+							     ' && ./driver ' + cmd_mid + '_2' + 
 							     cmd_end;
 
 				console.log(cmd);

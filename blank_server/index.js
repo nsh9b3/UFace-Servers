@@ -57,7 +57,7 @@ fs.access(usersLoc, fs.F_OK, function(err) {
     }
 });
 
-var localIP = '131.151.8.33';
+var localIP = '192.168.0.5';
 var dataServerIP = 'http://' + localIP + ':3000/';
 var port = 3001;
 var address = 'http://' + localIP + ':' + port + '/';

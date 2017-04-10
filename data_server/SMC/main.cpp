@@ -72,7 +72,7 @@ int main(int argc, char *argv[])
         //if(4 > argc) throw Not_Enough_Inputs();
         srand (time(NULL));
         //int histo_size = std::atoi(argv[1]); //Old variable value
-        int histo_size = 16;
+        int histo_size = 4;     // GRID SIZE - 1, 4, 16, 64
         
         mpz_class max_rand(0);
         mpz_class two(2);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
         std::string output_dir = argv[4];
         //std::cout << argv[4] << std::endl;
         //int bits_per_bin = std::atoi(argv[5]);
-        int bits_per_bin = 13;
+        int bits_per_bin = 15;          // BITS NEEDED PER BIN   - lg (256^2 / histo_size) + 1
         
         
         std::ifstream file_in;
