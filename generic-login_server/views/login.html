@@ -26,6 +26,8 @@
 		var address = <%- JSON.stringify(Address) %>;
 		var previous = <%- JSON.stringify(Previous) %>;
 		var result = <%- JSON.stringify(Result) %>;
+		var date = new Date();
+		var startTime = 0;
 
 		document.getElementById('serviceName').innerHTML = service;
 		document.getElementById('Name').value = user;
@@ -38,6 +40,7 @@
 		{
 			document.getElementById('login').style.display = 'block';
 			document.getElementById('forgot').style.display = 'block';
+			startTime = date.getTime();
 		}
 
 		if(result.Task == 'Login')
@@ -110,6 +113,8 @@
 
 		function loginForm() {
 			var password = document.getElementById('Password').value;
+			var endDate = new Date();
+			var endTime = endDate.getTime();
 
 			var form = document.createElement('form');
 			form.action = address + "Login/" + service + '.' + user;
@@ -125,6 +130,12 @@
 			attTask.setAttribute('name', 'Task');
 			attTask.setAttribute('value', 'Login');
 
+			var attTime = document.createElement('input');
+			attTime.setAttribute('type', 'text');
+			attTime.setAttribute('name', 'Time');
+			attTime.setAttribute('value', endTime - startTime);
+
+			form.appendChild(attTime);
 			form.appendChild(attTask);
 			form.appendChild(attPass);
 
@@ -136,6 +147,8 @@
 
 		function forgotForm() {
 			var password = document.getElementById('Password').value;
+			var endDate = new Date();
+			var endTime = endDate.getTime();
 			if(password == '')
 			{
 				alert('Please enter a valid password in the password field!');
@@ -185,6 +198,12 @@
 					attTask.setAttribute('name', 'Task');
 					attTask.setAttribute('value', 'Forgot');
 
+					var attTime = document.createElement('input');
+					attTime.setAttribute('type', 'text');
+					attTime.setAttribute('name', 'Time');
+					attTime.setAttribute('value', endTime - startTime);
+
+					form.appendChild(attTime);
 					form.appendChild(attPass);
 					form.appendChild(attTask);
 
